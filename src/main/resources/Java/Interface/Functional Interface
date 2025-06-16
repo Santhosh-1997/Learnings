@@ -1,0 +1,132 @@
+What?
+    It contains only one abstract method.
+        Note:
+            public interface Bird{
+                void canFly(String val);    //Here, public abstract is present by default whenever it is interface
+            }
+    @FunctionalInterface keyword is optional --- but advantage is if you use this and add one more abstract method, you get compilation error
+
+        @FunctionalInterface
+        public interface Bird{
+            void canFly(String val);
+            void canSwim(String val);
+        }
+        //you will get compilation error
+
+        But, you can have default method, static method and object class method
+
+        @FunctionalInterface
+        public interface Bird{
+            void canFly(String val);
+
+            default void canSwim(String val){
+                //implementation
+            }
+
+            static void canWalk(){
+                //implementation
+            }
+
+            String toString(); //object class method
+        }
+
+                Followup:
+                    1) What is default method?
+                        Introduced in java 8, where it interface can implement method and child classes dont need to inherit
+                        those classes. It is by default common to all classes.
+                            Why required?
+                                If huge number of classes inherit an interface, and you want to implement same result method in all classes
+                                you add an abstract method in interface and the real pain is all child classes have to inherit the same and provide
+                                the same result because you know it is same result anyway.
+                                That is why java 8 introduced where you can define a method in interface with abstract keyword where you can define
+                                the method and it applied to all child classes.
+                                Still, if some class want its own definition, they can have the same method in their class with their own implementation.
+
+    What is Lambda expression?
+
+    But before that, lets understand what are the ways to implement Functional Interface
+
+        @FunctionalInterface
+        public interface Bird{
+            void canFly(String val);
+        }
+
+    1) using implements keyword
+        class Eagle implements Bird{
+            @Override
+            public void canFly(String val){
+                //implementation
+            }
+        }
+
+    2) Using anonymous class
+        public static void main(String args[]){
+            Bird eagleObject = new Bird() {
+
+                @Override
+                public void canFly(String val){
+                    System.out.println(val);
+                }
+
+            };
+
+            eagleObject.canFly("Yes.. I can fly");
+        }
+
+            Followup:
+                What is anonymous class?
+                    Class without name and straight away writes the implementation of the method is called anonymous class
+
+    3) Using lambda expression
+        () ->  this is called lambda expression
+        This is to make it more simpler, compared to above two
+
+        public static void main(String args[]){
+            Bird eagleObject = (String val) -> {
+                System.out.println(val);
+            };
+            eagleObject.canFly("Yes.. I can fly");
+        }
+
+
+Types:
+
+    1) Consumer
+        It represents an operation where it accept single input parameter and no return
+        Basically, it consumes
+
+        @Functional Interface
+        public interface Consumer<T>{
+            void accept(T t);
+        }
+
+    2) Supplier
+        It accept no input but return a result
+
+        @Functional Interface
+        public interface Supplier<T>{
+            T get();
+        }
+
+    3) Function
+        It accepts and returns
+
+        @Functional Interface
+        public interface Supplier<T, R>{
+            R apply(T);
+        }
+
+    4) Predicate
+        It accepts but always returns boolean
+
+        @Functional Interface
+        public interface Supplier<T>{
+            boolean test(T t);
+        }
+
+
+
+
+
+
+

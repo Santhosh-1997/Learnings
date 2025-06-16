@@ -1,0 +1,6 @@
+
+
+Why in Java a single file can have only 1 public class?
+
+    Because main method is inside the public class and it is accessed by JVM.
+    JVM access like A.main()

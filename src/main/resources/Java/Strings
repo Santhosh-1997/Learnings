@@ -1,0 +1,21 @@
+Why did the String pool move from PermGen to the normal heap area?
+    PermGen space is limited, the default size is just 64 MB.
+    it was a problem with creating and storing too many string objects in PermGen space.
+    That’s why the String pool was moved to a larger heap area.
+    To make Java more memory efficient, the concept of string literal is used.
+    By the use of the ‘new’ keyword, The JVM will create a new string object in the normal heap area
+    even if the same string object is present in the string pool.
+
+Why string objects are immutable in Java?
+    Because java uses the concept of string literal.
+    Suppose there are 5 reference variables, all refer to one object “Sachin”.
+    If one reference variable changes the value of the object, it will be affected by all the reference variables.
+    That is why string objects are immutable in Java.
+
+What is the difference between == and equals() in Java, and how do they work when comparing objects?
+    ==: This is a reference comparison operator. When used with objects, it compares the memory addresses (or references) of the objects.
+    It checks whether two references point to the exact same object in memory, not whether the contents of the objects are the same.
+
+    equals(): This is a method defined in the Object class (which all Java classes inherit).
+    It is intended for value comparison. The default implementation of equals() compares memory addresses (similar to ==),
+    but many classes (like String, Integer, etc.) override this method to compare the actual content of the objects.

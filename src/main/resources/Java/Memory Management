@@ -1,0 +1,101 @@
+JVM manages it
+
+2 types of memory.
+    1) Stack
+    2) Heap
+
+        Stack:
+            - It stores temporary variable
+            - store primitive data type
+            - store the reference of the heap object
+            - Each thread has its own stack memory but all shares the common heap memory
+                follow up:
+                    Why is it called stack?
+                        All the methods create a space in stack called frame or scope to store its variables and references of the object.
+                        Now, the last called method would be deleted first whenever it encounters
+                        '}' meaning the end of the scope.
+                        pattern is last in first out
+                        That is why it is called stack
+                            follow up:
+                                Once the scope is done, we are removing the scope and removing the references of the objects to heap in
+                                that scope/frame.
+                                What happens to those objects once the references are removed???
+                                    GARBAGE COLLECTOR
+                                        It deletes the unreferenced objects of the heap. It runs periodically. JVM controls it.
+            - when stack memory is full, stack overflow error.
+
+            Types of reference:
+                1) Strong reference - GC wont remove it unless the reference is removed
+                2) Week reference - can be created manually like WeakReference<> t = new WeakReference() ; GC will remove it
+                3) Soft reference - type of week reference but gc can remove it only when it is very urgent
+
+
+        Heap:
+            2 parts
+                1) Young Generation - 3 parts ; Eden | S0 | S1
+                    Eden -> a new object whenever created is stored here
+                    GC uses Mark and Sweep algorithm
+                        a) delete all the unreferenced object - Mark algo
+                        b) it sweeps other surviving object to S0 & add its age(increment to 1) - Sweep algo - This process is called Minor GC
+                        c) now next time same mark and sweep algorithm is applied and now it moves to S1 & add its age.
+
+                2) Old Generation
+                    Now, when you set threshold as 3,
+                        those objects where age 3 is reached, it move to old generation from young generation
+                    Here, GC runs less periodically
+                    The process is called Major GC
+
+        MetaSpace : (Before JAVA 8, it is Prime Gen --> Difference is Prime Gen is also part of heap and it is not expandable but heap is expandable as required)
+            This is outside of Heap
+            It stores class variables like static variables
+            It stores class metadata like from which objects can be created
+            It stores constants
+            As soon as JVM needs any class, it will load here and once work is done, it will remove from here
+
+
+Garbage Collector
+
+    - Mark and Sweep Algorithm
+    - Mark and Sweep Compact Memory
+        So, in memory segment, GC first marks the objects to be removed and then sweep it
+        For eg,
+            *9**999
+            * -> marked to remove
+            9 -> not removed
+            After sweep, it look like this
+            _9__999
+            but this will bring all the used object survived together
+            9999___
+
+    Different versions of GC
+        1) Serial GC
+            Only 1 GC thread is used
+            It will be slow
+            Here, GC work will be expensive as the application thread starts as soon as
+            GC starts.
+            If GC is more, then your application will be slow.
+
+        2) Parallel GC
+            Default GC in Java 8
+            Depend upon the core, those many threads initiated
+            Since multiple threads are working, though pause time is there but it is very less.
+
+        3) Concurrent Mark And Sweep GC (From Java 17)
+            Concurrently GC threads are working
+            But, JVM does not guarantee
+            No Memory compaction happen in this
+
+        4) G1 GC
+            Application thread wont stop
+            same time, memory compaction also will happen
+
+    What happens if you have less pause time??
+        ThroughPut increase - Earlier, 1000 RPM now it can further increase
+        Latency decrease - Latency will decrease as there is less pause time and throughput increases
+
+
+
+
+
+
+

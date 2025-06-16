@@ -1,0 +1,36 @@
+What is the difference between ArrayList and LinkedList in Java? When would you choose one over the other?
+    ArrayList:
+
+    Internally backed by a dynamic array.
+    It provides fast random access (constant time O(1) for get() and set() operations).
+    Insertion or deletion of elements, especially in the middle of the list, can be slower (time complexity is O(n) in worst cases) because elements might need to be shifted.
+    It is generally preferred when you need frequent access to elements by index or when the size of the list is mostly fixed.
+    LinkedList:
+
+    Internally consists of doubly linked nodes, where each node contains a reference to both the next and previous node.
+    It provides efficient insertions and deletions (O(1) time complexity) if you're adding/removing elements at the beginning or end.
+    Random access is slower compared to ArrayList (time complexity O(n) for get() and set() operations) because you have to traverse through the nodes.
+    It is preferred when you need frequent insertions or deletions, particularly at the start or end of the list.
+
+What is the difference between HashMap and TreeMap in Java?
+    Ordering:
+
+    HashMap: Does not maintain any order. The entries are unordered and can appear in random sequence.
+    TreeMap: Maintains a sorted order of its keys according to their natural ordering (or a custom comparator if provided).
+    Performance:
+
+    HashMap: Offers O(1) average-time complexity for get and put operations.
+    TreeMap: Has O(log n) time complexity for get, put, and remove operations because it uses a Red-Black tree internally.
+    Null Keys and Values:
+
+    HashMap: Allows one null key and multiple null values.
+    TreeMap: Does not allow null keys (throws NullPointerException) but allows multiple null values.
+    Implementation:
+
+    HashMap: Internally backed by a hash table.
+    TreeMap: Internally backed by a Red-Black tree.
+    Use Case:
+
+    HashMap: When you don't need sorted keys and performance is critical.
+    TreeMap: When you need the keys to be sorted or need operations like finding the greatest or least key strictly less than or greater than a given key.
+
