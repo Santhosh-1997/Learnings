@@ -1,0 +1,33 @@
+Diff b/w Thread and Process?
+    Process is whole activity and Thread is a part of process
+    Process is independent program with its own memory space. Thread is a light weight execution within
+    the process.
+    Process has a separate memory and independent resource allocation. Thread has shared memory within
+    the process and shares resources with other threads.
+
+Why Thread creation by extending Thread class is bad?
+    Because you cannot extend any other class after that. Multiple inheritance over class is not allowed
+    in Java
+
+Diff b/w Runnable and Callable?
+    Callable has adv over Runnable
+        - it returns something
+        - checked exception handling
+        - useful in futures
+
+Diff b/w start() and run()
+    Start is called by thread object and start the thred execution and indirectly calls run() -- start create new thread
+    run is where the execution happens for new thread -- run dont create new thread
+
+Can start() be called twice?
+    No, second time it gives IllegalThreadState Exception
+
+What if uncatched exception is thrown from run()
+    No issue to main thread as in the run method new thread is started provided it is called by start().
+    New thread would be crashed
+
+Diff b/w sleep() and wait()
+    Sleep will make the current thread to sleep/pause for specific time without releasing the lock
+    wait will make the thread pause until some other thread notify because once wait is called
+    lock is released for other threads to take it forward
+

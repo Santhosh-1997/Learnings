@@ -1,0 +1,178 @@
+ACID Properties
+---------------
+
+1. Atomicity
+   - All operations in a transaction succeed or fail together.
+   - Ensured by:
+     * Transaction logs (Write-Ahead Logs)
+     * BEGIN TRANSACTION, COMMIT, ROLLBACK commands
+
+2. Consistency
+   - Maintains database rules (constraints, triggers, etc.)
+   - Ensures transition from one valid state to another
+
+3. Isolation
+   - Concurrent transactions don’t interfere with each other
+   - Controlled using Isolation Levels
+
+4. Durability
+   - Once committed, changes persist even in case of a crash
+
+
+Concurrency Control
+-------------------
+- Problem: Multiple users accessing same data → inconsistency
+- Synchronized blocks work only in single-instance apps
+- Not suitable for distributed systems
+- Solution: Use Transactions to ensure consistency
+
+
+DB Locking
+----------
+1. Shared Lock (Read Lock)
+   - Allows read, blocks write
+
+2. Exclusive Lock
+   - Blocks both read and write
+
+
+Anomalies in Isolation
+----------------------
+
+1. Dirty Read:
+   - T1 reads uncommitted data written by T2
+   - If T2 rolls back, T1 has invalid data
+
+2. Non-repeatable Read:
+   - T1 reads a row twice
+   - T2 modifies the row in between
+
+3. Phantom Read:
+   - T1 executes same query twice
+   - T2 adds rows in between → results change
+
+
+Isolation Levels Summary
+------------------------
+
+| Level             | Read Lock                     | Write Lock                    | Prevents                         | Allows                          |
+|------------------|-------------------------------|-------------------------------|----------------------------------|----------------------------------|
+| Read Uncommitted | No lock                       | No lock                       | None                             | Dirty, Non-repeatable, Phantom   |
+| Read Committed   | Shared (released after read)  | Exclusive (till end of TXN)   | Dirty reads                      | Non-repeatable, Phantom          |
+| Repeatable Read  | Shared (till end of TXN)      | Exclusive (till end of TXN)   | Dirty, Non-repeatable reads      | Phantom read                     |
+| Serializable     | Shared + Range lock           | Exclusive + Range lock        | Dirty, Non-repeatable, Phantom   | None                             |
+
+
+Why Read Committed Allows Non-Repeatable Reads
+----------------------------------------------
+- In Read Committed:
+  * SELECT acquires a shared lock which is released immediately after the read.
+  * UPDATE acquires an exclusive lock and holds it till commit.
+- Therefore:
+  * T1 reads → releases lock
+  * T2 updates and commits
+  * T1 reads again → sees different value
+
+→ Because the shared lock is **not held for the duration**, non-repeatable reads can occur.
+
+
+Why Repeatable Read Allows Phantom Reads
+----------------------------------------
+- Repeatable Read ensures the same **rows** read will not change.
+- But it doesn’t prevent **new rows** from being inserted that match the same WHERE clause.
+- Example:
+  * T1: SELECT * FROM employees WHERE dept = 'Sales';
+  * T2: INSERT INTO employees (dept = 'Sales');
+  * T1: SELECT * again → now sees more rows
+
+→ Only existing rows are locked, **range of values is not**, so phantom rows can appear.
+
+- Serializable isolation level fixes this by applying **range locks**, preventing inserts in the range.
+
+
+Spring @Transactional Example
+-----------------------------
+@Transactional(isolation = Isolation.REPEATABLE_READ)
+- If not set, default isolation level is picked (DB dependent)
+
+
+Locking Strategies
+------------------
+
+1. Optimistic Locking:
+   - High concurrency
+   - Uses version field
+   - Write allowed only if version hasn’t changed
+
+2. Pessimistic Locking:
+   - High conflict environments
+   - Locks held for full transaction duration
+   - Risk of Deadlocks
+
+
+Deadlock Example
+----------------
+- T1 reads row A (locks A)
+- T2 reads row B (locks B)
+- T1 tries to write B → waits for T2
+- T2 tries to write A → waits for T1
+=> Circular wait = DEADLOCK
+
+
+SQL Syntax Example
+------------------
+SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+BEGIN TRANSACTION;
+-- your queries
+COMMIT;
+
+
+
+### Focused Notes for Transaction & Concurrency Interview Questions
+
+---
+
+What is the default isolation level in MySQL / PostgreSQL / Oracle? Why does it matter?
+
+Answer:
+- MySQL (InnoDB): Repeatable Read
+- PostgreSQL: Read Committed
+- Oracle: Serializable (uses snapshot isolation internally)
+
+---
+
+What happens if a @Transactional method throws an unchecked exception? Is the transaction rolled back?
+
+Answer:
+- In Spring, if a `@Transactional` method throws an unchecked exception (RuntimeException or Error), the transaction is rolled back automatically.
+- For checked exceptions, rollback does not happen by default unless explicitly configured with `rollbackFor`.
+- This behavior ensures data integrity by not committing partial changes.
+
+Example:
+@Transactional(rollbackFor = CustomCheckedException.class)
+public void processOrder() throws CustomCheckedException {
+    // business logic
+}
+
+---
+
+How would you design a transactional system in a NoSQL environment (e.g., MongoDB)?
+
+Answer:
+- Use multi-document transactions if supported (MongoDB 4.0+).
+- Design data models for atomicity by embedding related data together to avoid multi-doc updates.
+- Apply idempotency keys and retry logic at the application layer to handle partial failures.
+- Use compensating actions or event-driven patterns if full ACID transactions aren't feasible.
+
+---
+
+What is a global transaction and how would you manage it in a microservices architecture?
+
+Answer:
+- A global transaction spans multiple services that each update their own data stores as part of one logical operation.
+- Management approaches:
+  1. Saga Pattern: Each service performs its action and publishes events; compensating transactions handle rollbacks.
+  2. Two-Phase Commit (2PC): All participants prepare to commit, then commit or rollback together (less scalable).
+  3. Try-Confirm-Cancel (TCC): Explicit phases for reserving, confirming, or canceling work.
+
+- Choice depends on consistency needs, performance constraints, and failure handling complexity.

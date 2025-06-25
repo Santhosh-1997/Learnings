@@ -1,0 +1,25 @@
+CAP
+    - Consistency, Availability, Partition Tolerance
+    - Impossible to distributed system to provide all three
+
+    Consistency
+        - It should be consistent across all nodes even if it takes some toll on latency
+
+    Availability
+        - All nodes should be available even if the result from some nodes are not reflected yet
+
+    Network Partitions
+        - When there is some issue with the network between the nodes, the system has to choose between
+        consistency and availability
+
+
+Design Strategies
+    Eventual Consistency
+    Strong Consistency
+    Tunable Consistency
+    Quoroum based Approaches
+
+
+PACELC
+    If Partition, trade off is b/w Availabilty and Consistency
+    Else Latency and Consistency
