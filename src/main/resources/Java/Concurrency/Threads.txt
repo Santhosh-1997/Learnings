@@ -31,3 +31,28 @@ Diff b/w sleep() and wait()
     wait will make the thread pause until some other thread notify because once wait is called
     lock is released for other threads to take it forward
 
+ThreadPool
+
+
+Diff b/w execute and submit in ExecutorService
+    execute -> call and forget ; machine crashes, the task is lost
+    submit -> it can return future
+
+
+Diff b/w scheduleatfixedrate and scheduleAtFixedDelay
+
+Exectuor Service
+    -submit()
+    -execute()
+    -invokeAll()
+Scheduled Executor Service
+    -scheduleatfixedrate
+    -scheduleAtFixedDelay
+Executor Facotory
+    -Fixed Thread pool
+    -Cached Thread pool
+
+
+
+Thread Synchronization
+
