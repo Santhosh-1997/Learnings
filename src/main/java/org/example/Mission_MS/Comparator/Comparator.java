@@ -12,7 +12,11 @@ public class Comparator {
                 new Person("Bob", 30)
         );
 
-        Collections.sort(people, new PersonAgeComparator());
+        java.util.Comparator<Person> personComparatorr = ((Person a, Person b) -> {
+            return Integer.compare(a.age, b.age);
+        });
+
+        Collections.sort(people, personComparatorr);
         System.out.println(people);
     }
 }
